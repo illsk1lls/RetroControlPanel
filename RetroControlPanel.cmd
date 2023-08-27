@@ -29,6 +29,6 @@ IF %errorlevel% == 6 START "" Rundll32.exe shell32.dll,Control_RunDLL powercfg.c
 IF %errorlevel% == 7 START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1
 IF %errorlevel% == 8 START "" Rundll32.exe keymgr.dll,KRShowKeyMgr
 IF %errorlevel% == 9 START "" Rundll32.exe shell32.dll,Control_RunDLL nusrmgr.cpl
-IF %errorlevel% == 10 BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/InitialSetup.cmd" "%~dp0InitialSetup.cmd" & START "" "%~dp0InitialSetup.cmd" 
+IF %errorlevel% == 10 CLS & ECHO. & ECHO Performing Automated Initial Setup.. & ECHO. BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/InitialSetup.cmd" "%~dp0InitialSetup.cmd" & START "" "%~dp0InitialSetup.cmd" 
 IF %errorlevel% == 11 (GOTO) 2>nul & DEL "%~f0">nul & EXIT
 GOTO START
