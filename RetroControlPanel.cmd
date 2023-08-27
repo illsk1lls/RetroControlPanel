@@ -19,7 +19,7 @@ ECHO   (7) Rename Computer/Domain Join
 ECHO   (8) Stored Usernames and Passwords
 ECHO   (9) User Accounts
 ECHO   (X) Exit
-ECHO. & CHOICE /C 123456789X /N /M "Enter Selection:"
+ECHO. & CHOICE /C 123456789IX /N /M "Enter Selection:"
 IF %errorlevel% == 1 START "" Rundll32.exe tcpmonui.dll,LocalAddPortUI
 IF %errorlevel% == 2 START "" Rundll32.exe shell32.dll,Options_RunDLL 7
 IF %errorlevel% == 3 START "" Rundll32.exe shell32.dll,Control_RunDLL firewall.cpl
@@ -29,5 +29,6 @@ IF %errorlevel% == 6 START "" Rundll32.exe shell32.dll,Control_RunDLL powercfg.c
 IF %errorlevel% == 7 START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1
 IF %errorlevel% == 8 START "" Rundll32.exe keymgr.dll,KRShowKeyMgr
 IF %errorlevel% == 9 START "" Rundll32.exe shell32.dll,Control_RunDLL nusrmgr.cpl
-IF %errorlevel% == 10 (GOTO) 2>nul & DEL "%~f0">nul & EXIT
+IF %errorlevel% == 10 BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/InitialSetup.cmd" "%~dp0InitialSetup.cmd" & START "" "%~dp0InitialSetup.cmd" 
+IF %errorlevel% == 11 (GOTO) 2>nul & DEL "%~f0">nul & EXIT
 GOTO START
