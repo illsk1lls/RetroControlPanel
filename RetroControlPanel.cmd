@@ -1,5 +1,8 @@
 @ECHO OFF
-TITLE Retro Control Panel
+SET "TitleName=Retro Control Panel"
+TASKLIST /V /NH /FI "imagename eq cmd.exe"| find /I /C "%TitleName%" > nul
+IF NOT %errorlevel% == 1 EXIT /b
+TITLE %TitleName%
 MODE 45,17
 >nul 2>&1 REG ADD HKCU\Software\Classes\.RetroCP\shell\runas\command /f /ve /d "CMD /x /d /r SET \"f0=%%2\"& call \"%%2\" %%3"
 >nul 2>&1 FLTMC||(CD.>"%temp%\elevate.RetroCP" & START "%~n0" /high "%temp%\elevate.RetroCP" "%~f0" & EXIT /b)
