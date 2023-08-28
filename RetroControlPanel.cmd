@@ -1,5 +1,5 @@
 @ECHO OFF
-FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console" /v ForceV2 2^>nul`) DO (IF NOT "%%i"=="0x1" SET STATE=REVERT & REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul)
+IF "%~1"=="REVERT" (SET "STATE=%~1") ELSE (FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console" /v ForceV2 2^>nul`) DO (IF NOT "%%i"=="0x1" SET STATE=REVERT & REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul))
 MODE 45,17
 SET "TitleName=Retro Control Panel"
 TASKLIST /V /NH /FI "imagename eq cmd.exe"|FIND /I /C "%TitleName%">nul
