@@ -35,6 +35,5 @@ IF %errorlevel% == 8 START "" Rundll32.exe keymgr.dll,KRShowKeyMgr
 IF %errorlevel% == 9 START "" Rundll32.exe shell32.dll,Control_RunDLL nusrmgr.cpl
 IF %errorlevel% == 10 (IF "%OPT%"=="B" (SET "OPT=" & COLOR) ELSE (SET "OPT=B" & COLOR 06))
 IF %errorlevel% == 11 CLS & ECHO. & ECHO Performing InitialSetup%OPT%... & IF EXIST "%~dp0InitialSetup*.cmd" DEL "%~dp0InitialSetup*.cmd" /F /Q & BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/no-powershell/InitialSetup.cmd" "%~dp0InitialSetup%OPT%.cmd">nul & START "" "%~dp0InitialSetup%OPT%.cmd"
-ECHO %~1 & PAUSE
-IF %errorlevel% == 12 (IF "%~1"=="REVERT" (REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul) ) & (GOTO) 2>nul & DEL "%~f0">nul & EXIT
+IF %errorlevel% == 12 (IF "%~1"=="REVERT" (REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 0 /f>nul) ) & (GOTO) 2>nul & DEL "%~f0">nul & EXIT
 GOTO START
