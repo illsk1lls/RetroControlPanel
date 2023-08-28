@@ -1,5 +1,5 @@
 @ECHO OFF
-FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console" /v ForceV2 2^>nul`) DO IF NOT "%%i"=="1" SET STATE=REVERT & REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul
+FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console" /v ForceV2 2^>nul`) DO (IF NOT "%%i"=="0x1" SET STATE=REVERT & REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul)
 MODE 45,17
 SET "TitleName=Retro Control Panel"
 TASKLIST /V /NH /FI "imagename eq cmd.exe"|FIND /I /C "%TitleName%">nul
@@ -32,10 +32,10 @@ IF %errorlevel% == 3 START "" Rundll32.exe shell32.dll,Control_RunDLL firewall.c
 IF %errorlevel% == 4 START "" Rundll32.exe shell32.dll,SHHelpShortcuts_RunDLL Connect
 IF %errorlevel% == 5 START "" Rundll32.exe shell32.dll,Control_RunDLL ncpa.cpl
 IF %errorlevel% == 6 START "" Rundll32.exe shell32.dll,Control_RunDLL powercfg.cpl
-IF %errorlevel% == 7 (IF "%OPT%"=="B" (RD "%~dp0\RetroControlPanel" /S /Q>nul & MD "%~dp0\RetroControlPanel" & COPY /Y "%~f0" "%~dp0\RetroControlPanel" & REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v RetroControlPanel /t REG_SZ /d "%~dp0\RetroControlPanel\RetroControlPanel.cmd" /f>nul & START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1) ELSE (REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RetroControlPanel" /f>nul & RD "%~dp0\RetroControlPanel" /S /Q>nul & START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1))
+IF %errorlevel% == 7 (IF "%OPT%"=="B" (RD "%~dp0RetroControlPanel" /S /Q>nul & MD "%~dp0RetroControlPanel" & COPY /Y "%~f0" "%~dp0RetroControlPanel" & REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v RetroControlPanel /t REG_SZ /d "\"%~dp0RetroControlPanel\RetroControlPanel.cmd\" %STATE%" /f>nul & START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1) ELSE (REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RetroControlPanel" /f>nul & RD "%~dp0RetroControlPanel" /S /Q>nul & START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1))
 IF %errorlevel% == 8 START "" Rundll32.exe keymgr.dll,KRShowKeyMgr
 IF %errorlevel% == 9 START "" Rundll32.exe shell32.dll,Control_RunDLL nusrmgr.cpl
 IF %errorlevel% == 10 (IF "%OPT%"=="B" (SET "OPT=" & SET "HEADER=%ESC%[1mMAIN MENU%ESC%[0m") ELSE (SET "OPT=B" & SET "HEADER=%ESC%[33mMAIN MENU%ESC%[0m"))
 IF %errorlevel% == 11 CLS & ECHO. & ECHO Performing InitialSetup%OPT%... & (IF EXIST "%~dp0InitialSetup*.cmd" (DEL "%~dp0InitialSetup*.cmd" /F /Q>nul)) & BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/no-powershell/InitialSetup.cmd" "%~dp0InitialSetup%OPT%.cmd">nul & START "" "%~dp0InitialSetup%OPT%.cmd"
-IF %errorlevel% == 12 (IF "%~1"=="REVERT" (REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 0 /f>nul) ) & (GOTO) 2>nul & DEL "%~f0">nul & EXIT
+IF %errorlevel% == 12 (IF "%~1"=="REVERT" (REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 0 /f>nul)) & (GOTO) 2>nul & DEL "%~f0">nul & EXIT
 GOTO START
