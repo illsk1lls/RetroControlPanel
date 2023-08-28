@@ -10,7 +10,7 @@ TITLE %TitleName%
 >nul 2>&1 FLTMC||(CD.>"%temp%\elevate.RetroCP" & START "%~n0" /high "%temp%\elevate.RetroCP" "%~f0" "%_:"=""%"& EXIT /b)
 >nul 2>&1 REG DELETE HKCU\Software\Classes\.RetroCP\ /f &>nul 2>&1 DEL %temp%\elevate.RetroCP /f
 FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console\%%%%Startup" /v DelegationConsole 2^>nul`) DO (SET "V1=%%i")
-(IF "%V1%"=="%LETWIN%" (SET "V2=%LETWIN%" & SET "TERMMODE= LETWIN")) & (IF "%V1%"=="%LEGACY%" (SET "V2=%LEGACY%")) & (IF "%V1%"=="%TERMINAL%" (SET "V2=%TERMINAL2%" & SET "TERMMODE= TERMINAL"))
+(IF "%V1%"=="%LETWIN%" (SET "V2=%LETWIN%" & SET "TERMMODE=LETWIN")) & (IF "%V1%"=="%LEGACY%" (SET "V2=%LEGACY%")) & (IF "%V1%"=="%TERMINAL%" (SET "V2=%TERMINAL2%" & SET "TERMMODE=TERMINAL"))
 IF NOT "%V1%"=="%LEGACY%" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%LEGACY%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%LEGACY%" /f>nul)
 CD /D %~dp0 & (IF NOT "%~f0" EQU "%ProgramData%\%~nx0" (COPY /Y "%~f0" "%ProgramData%">nul & START "" "%ProgramData%\%~nx0" %STATE%%TERMMODE%& EXIT /b)) &>nul 2>&1 RD "%~dp0RetroControlPanel" /S /Q
 FOR /F "usebackq skip=2 tokens=3-4" %%i IN (`REG QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName 2^>nul`) DO IF NOT "%%i %%j"=="Windows 10" ECHO. & ECHO Unsupported system detected. & ECHO. & PAUSE & EXIT
