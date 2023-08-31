@@ -1,11 +1,5 @@
 @ECHO OFF
-IF [%1]==[] (
-SETLOCAL ENABLEDELAYEDEXPANSION
-PING -n 1 "raw.githubusercontent.com"|FINDSTR /r /c:"[0-9] *ms">nul & IF !errorlevel!==0 (ECHO. & ECHO Checking for updates... & BITSADMIN /transfer "RetroUpdater" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/RetroControlPanel/main/RetroControlPanel.cmd" "%~dp0update.dat">nul)
-FC "%~f0" "%~dp0update.dat"|FIND "***">nul
-IF !errorlevel!==0 (MOVE /Y "%~dp0update.dat" "%~f0">nul & ECHO. & ECHO Update Complete! Close and Re-Open the tool to continue.. & ECHO. & PAUSE & EXIT /b) ELSE (DEL "%~dp0update.dat" /F /Q)
-ENDLOCAL
-)
+IF [%1]==[] (SETLOCAL ENABLEDELAYEDEXPANSION & PING -n 1 "raw.githubusercontent.com"|FINDSTR /r /c:"[0-9] *ms">nul & IF !errorlevel!==0 (ECHO. & ECHO Checking for updates... & BITSADMIN /transfer "RetroUpdater" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/RetroControlPanel/main/RetroControlPanel.cmd" "%~dp0update.dat">nul) & FC "%~f0" "%~dp0update.dat"|FIND "***">nul & IF !errorlevel!==0 (MOVE /Y "%~dp0update.dat" "%~f0">nul & ECHO. & ECHO Update Complete! Close and Re-Open the tool to continue.. & ECHO. & PAUSE & EXIT /b) ELSE (DEL "%~dp0update.dat" /F /Q) & ENDLOCAL)
 SET "LEGACY={B23D10C0-E52E-411E-9D5B-C09FDF709C7D}" & SET "LETWIN={00000000-0000-0000-0000-000000000000}" & SET "TERMINAL={2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" & SET "TERMINAL2={E12CFF52-A866-4C77-9A90-F570A7AA2C6B}"
 IF "%~1"=="REVERT" (SET "STATE=%~1") ELSE (SET "TERMMODE=%~1" & FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console" /v ForceV2 2^>nul`) DO (IF NOT "%%i"=="0x1" SET STATE=REVERT & REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul))
 MODE 45,17
