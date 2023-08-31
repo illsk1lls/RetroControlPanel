@@ -7,4 +7,4 @@ If option (7) is selected while in Business mode, RetroControlPanel will be adde
 
 If your console is set to use legacy mode or the new terminal mode by default, it will be temporarily switched to ConsoleV2 while the script is running, and changed back when the script is closed. This will persist through RunOnce reboot during domain join, even if the script was unable to close properly due to restart.<br>
 
-Updater included, linked back to this get, to ensure you are always running the latest version. ;)<br>
+Updater included, linked back to this Git, to ensure you are always running the latest version. ;)<br>
