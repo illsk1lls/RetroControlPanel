@@ -31,7 +31,7 @@ ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m8%ESC%[0m%ESC%[1m)%ESC%[0m Stored Usernames and
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m9%ESC%[0m%ESC%[1m)%ESC%[0m User Accounts
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31mX%ESC%[0m%ESC%[1m)%ESC%[0m Exit
 ECHO. & CHOICE /C 123456789BIX /N /M "Enter Selection:"
-IF %errorlevel%==1 START "" Rundll32.exe printui.dll,PrintUIEntry /im
+IF %errorlevel%==1 START "" Rundll32.exe printui.dll,PrintUIEntry /il
 IF %errorlevel%==2 START "" Rundll32.exe shell32.dll,Options_RunDLL 7
 IF %errorlevel%==3 START "" Rundll32.exe shell32.dll,Control_RunDLL firewall.cpl
 IF %errorlevel%==4 START "" Rundll32.exe shell32.dll,SHHelpShortcuts_RunDLL Connect
