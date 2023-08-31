@@ -5,7 +5,7 @@ IF "%~1"=="REVERT" (SET "STATE=%~1") ELSE (SET "TERMMODE=%~1" & FOR /F "usebackq
 MODE 45,17
 SET "TitleName=Retro Control Panel"
 TASKLIST /V /NH /FI "imagename eq cmd.exe"|FIND /I /C "%TitleName%">nul
-IF NOT %errorlevel%==1 (ECHO ERROR: & ECHO Retro Control Panel is already open!) |MSG %UserName% & EXIT /b
+IF NOT %errorlevel%==1 (ECHO ERROR: & ECHO Retro Control Panel is already open!) |MSG * & EXIT /b
 TITLE %TitleName%
 >nul 2>&1 REG ADD HKCU\Software\Classes\.RetroCP\shell\runas\command /f /ve /d "CMD /x /d /r SET \"f0=%%2\"& call \"%%2\" %%3"& set _= %*
 >nul 2>&1 FLTMC||(CD.>"%temp%\elevate.RetroCP" & START "%~n0" /high "%temp%\elevate.RetroCP" "%~f0" "%_:"=""%"& EXIT /b)
