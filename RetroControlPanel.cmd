@@ -1,4 +1,5 @@
 @ECHO OFF
+:RELOAD <update>
 ::Change windows size
 MODE 45,17
 ::Only one instance allowed at a time
@@ -13,7 +14,7 @@ TITLE %TitleName%
 ::Check system Win11/10 Supported - Both show up as 10
 FOR /F "usebackq skip=2 tokens=3-4" %%i IN (`REG QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName 2^>nul`) DO IF NOT "%%i %%j"=="Windows 10" ECHO. & ECHO Unsupported system detected. & ECHO. & PAUSE & EXIT
 ::Check for updates
-IF [%1]==[] (SETLOCAL ENABLEDELAYEDEXPANSION & PING -n 1 "raw.githubusercontent.com"|FINDSTR /r /c:"[0-9] *ms">nul & IF !errorlevel!==0 (ECHO. & ECHO Checking for updates... & BITSADMIN /transfer "RetroUpdater" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/RetroControlPanel/main/RetroControlPanel.cmd" "%~dp0update.dat">nul) & FC "%~f0" "%~dp0update.dat"|FIND "***">nul & IF !errorlevel!==0 (MOVE /Y "%~dp0update.dat" "%~f0">nul & ECHO TIMEOUT 3 /NOBREAK ^>nul ^& START "" "%~f0" ^& ^(GOTO^) 2^>nul ^& DEL "%%~f0"^>nul ^& EXIT>"%~dp0relaunch.cmd" & START "" "%~dp0relaunch.cmd" & EXIT /b) ELSE (DEL "%~dp0update.dat" /F /Q) & ENDLOCAL)
+IF [%1]==[] (SETLOCAL ENABLEDELAYEDEXPANSION & PING -n 1 "raw.githubusercontent.com"|FINDSTR /r /c:"[0-9] *ms">nul & IF !errorlevel!==0 (ECHO. & ECHO Checking for updates... & BITSADMIN /transfer "RetroUpdater" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/RetroControlPanel/main/RetroControlPanel.cmd" "%~dp0update.dat">nul) & FC "%~f0" "%~dp0update.dat"|FIND "***">nul & IF !errorlevel!==0 (MOVE /Y "%~dp0update.dat" "%~f0">nul & GOTO RELOAD) ELSE (DEL "%~dp0update.dat" /F /Q) & ENDLOCAL)
 ::Define Console Types
 SET "LEGACY={B23D10C0-E52E-411E-9D5B-C09FDF709C7D}" & SET "LETWIN={00000000-0000-0000-0000-000000000000}" & SET "TERMINAL={2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" & SET "TERMINAL2={E12CFF52-A866-4C77-9A90-F570A7AA2C6B}"
 ::Check self-passed vars and prepare settings for main menu (ForceV2 1)
