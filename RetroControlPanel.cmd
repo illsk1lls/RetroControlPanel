@@ -1,5 +1,5 @@
 @ECHO OFF
-:RELOAD
+:RELOAD <restart after update>
 ::Change windows size
 MODE 45,17
 ::Only one instance allowed at a time
