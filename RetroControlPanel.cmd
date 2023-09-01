@@ -1,5 +1,5 @@
 @ECHO OFF
-::Change windows size
+::Change window size
 MODE 45,17
 ::Only one instance allowed at a time
 SET "TitleName=Retro Control Panel"
