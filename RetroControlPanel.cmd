@@ -17,10 +17,10 @@ IF [%1]==[] (SETLOCAL ENABLEDELAYEDEXPANSION & PING -n 1 "raw.githubusercontent.
 ::Define Console Types
 SET "LEGACY={B23D10C0-E52E-411E-9D5B-C09FDF709C7D}" & SET "LETWIN={00000000-0000-0000-0000-000000000000}" & SET "TERMINAL={2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" & SET "TERMINAL2={E12CFF52-A866-4C77-9A90-F570A7AA2C6B}"
 ::Check self-passed vars and prepare settings for main menu (ForceV2 1)
-IF "%~1"=="REVERT" (SET "STATE=%~1") ELSE (SET "TERMMODE=LEGACY" & FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console" /v ForceV2 2^>nul`) DO (IF NOT "%%i"=="0x1" SET STATE=REVERT & REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul))
+IF "%~1"=="REVERT" (SET "STATE=%~1") ELSE (FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console" /v ForceV2 2^>nul`) DO (IF NOT "%%i"=="0x1" SET STATE=REVERT & REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 1 /f>nul))
 ::Check active console settings and change to required option for ANSI color and window size control
 FOR /F "usebackq tokens=3" %%i IN (`REG QUERY "HKCU\Console\%%%%Startup" /v DelegationConsole 2^>nul`) DO (SET "V1=%%i")
-(IF "%V1%"=="%LETWIN%" (SET "V2=%LETWIN%" & SET "TERMMODE=LETWIN")) & (IF "%V1%"=="%LEGACY%" (SET "V2=%LEGACY%")) & (IF "%V1%"=="%TERMINAL%" (SET "V2=%TERMINAL2%" & SET "TERMMODE=TERMINAL"))
+(IF "%V1%"=="%LETWIN%" (SET "V2=%LETWIN%" & SET "TERMMODE=LETWIN")) & (IF "%V1%"=="%LEGACY%" (SET "V2=%LEGACY%" & SET "TERMMODE=LEGACY")) & (IF "%V1%"=="%TERMINAL%" (SET "V2=%TERMINAL2%" & SET "TERMMODE=TERMINAL"))
 IF NOT "%V1%"=="%LEGACY%" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%LEGACY%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%LEGACY%" /f>nul)
 ::Self copy to %ProgramData% and relaunch from there. Pass vars containing terminal settings to new instance. Close original instance.
 CD /D %~dp0 & (IF NOT "%~f0" EQU "%ProgramData%\%~nx0" (COPY /Y "%~f0" "%ProgramData%">nul & START "" "%ProgramData%\%~nx0" %STATE%%TERMMODE%& EXIT /b)) &>nul 2>&1 RD "%~dp0RetroControlPanel" /S /Q
