@@ -4,16 +4,16 @@ MODE 45,7
 ::Only one instance allowed at a time
 SET "TitleName=Retro Control Panel"
 TASKLIST /V /NH /FI "imagename eq cmd.exe"|FIND /I /C "%TitleName%">nul
-IF NOT %errorlevel%==1 (ECHO ERROR: & ECHO Retro Control Panel is already open!) |MSG * & EXIT /b
+IF NOT %errorlevel%==1 POWERSHELL -nop -c "$^={$Notify=[PowerShell]::Create().AddScript({$Audio=New-Object System.Media.SoundPlayer;$Audio.SoundLocation=$env:WinDir + '\Media\Windows Notify System Generic.wav';$Audio.playsync()});$rs=[RunspaceFactory]::CreateRunspace();$rs.ApartmentState="^""STA"^"";$rs.ThreadOptions="^""ReuseThread"^"";$rs.Open();$Notify.Runspace=$rs;$Notify.BeginInvoke()};&$^;$PopUp=New-Object -ComObject Wscript.Shell;$PopUp.Popup("^""Retro Control Panel is already open!"^"",0,'ERROR:',0x10)">nul&EXIT
 TITLE %TitleName%
 ::Relaunch with admin rights if needed
 >nul 2>&1 REG ADD HKCU\Software\Classes\.RetroCP\shell\runas\command /f /ve /d "CMD /x /d /r SET \"f0=%%2\"& call \"%%2\" %%3"& set _= %*
 >nul 2>&1 FLTMC||(CD.>"%temp%\elevate.RetroCP" & START "%~n0" /high "%temp%\elevate.RetroCP" "%~f0" "%_:"=""%"& EXIT /b)
 >nul 2>&1 REG DELETE HKCU\Software\Classes\.RetroCP\ /f &>nul 2>&1 DEL %temp%\elevate.RetroCP /f
 ::Check system - Win11/10 Supported - Both show up as 10
-FOR /F "usebackq skip=2 tokens=3-4" %%# IN (`REG QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName 2^>nul`) DO IF NOT "%%# %%$"=="Windows 10" ECHO. & ECHO Unsupported system detected. & ECHO. & PAUSE & EXIT
+FOR /F "usebackq skip=2 tokens=3-4" %%# IN (`REG QUERY "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v ProductName 2^>nul`) DO IF NOT "%%# %%$"=="Windows 10" ECHO/ & ECHO Unsupported system detected. & ECHO/ & PAUSE & EXIT
 ::Update if available
-IF [%1]==[] (SETLOCAL ENABLEDELAYEDEXPANSION & PING -n 1 "raw.githubusercontent.com"|FINDSTR /r /c:"[0-9] *ms">nul & IF !errorlevel!==0 (ECHO. & ECHO Checking for updates... & BITSADMIN /transfer "RetroUpdater" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/RetroControlPanel/main/RetroControlPanel.cmd" "%~dp0update.dat">nul) & FC "%~f0" "%~dp0update.dat"|FIND "***">nul & IF !errorlevel!==0 (MOVE /Y "%~dp0update.dat" "%~f0">nul & ECHO. & ECHO Update Complete, Re-Launch to proceed & ECHO. & PAUSE & EXIT) ELSE (DEL "%~dp0update.dat" /F /Q) & ENDLOCAL)
+IF [%1]==[] (SETLOCAL ENABLEDELAYEDEXPANSION & PING -n 1 "raw.githubusercontent.com"|FINDSTR /r /c:"[0-9] *ms">nul & IF !errorlevel!==0 (ECHO/ & ECHO Checking for updates... & BITSADMIN /transfer "RetroUpdater" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/RetroControlPanel/main/RetroControlPanel.cmd" "%~dp0update.dat">nul) & FC "%~f0" "%~dp0update.dat"|FIND "***">nul & IF !errorlevel!==0 (MOVE /Y "%~dp0update.dat" "%~f0">nul & ECHO/ & ECHO Update Complete, Re-Launch to proceed & ECHO/ & PAUSE & EXIT) ELSE (DEL "%~dp0update.dat" /F /Q) & ENDLOCAL)
 ::Define Console Types
 SET "LEGACY={B23D10C0-E52E-411E-9D5B-C09FDF709C7D}" & SET "LETWIN={00000000-0000-0000-0000-000000000000}" & SET "TERMINAL={2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" & SET "TERMINAL2={E12CFF52-A866-4C77-9A90-F570A7AA2C6B}"
 ::Check self-passed vars and prepare settings for main menu (ForceV2 1)
@@ -31,7 +31,7 @@ MODE 45,17
 FOR /F "tokens=1,2 delims=#" %%# IN ('"PROMPT #$H#$E# & ECHO ON & FOR %%$ IN (1) DO REM"') DO SET ESC=%%$
 SET "HEADER=%ESC%[1mMAIN MENU%ESC%[0m"
 :MENU
-CLS & ECHO. & ECHO                   %HEADER%                 & ECHO %ESC%[1m[%ESC%[0m%ESC%[31m==========================================%ESC%[0m%ESC%[1m]%ESC%[0m& ECHO.
+CLS & ECHO/ & ECHO                   %HEADER%                 & ECHO %ESC%[1m[%ESC%[0m%ESC%[31m==========================================%ESC%[0m%ESC%[1m]%ESC%[0m& ECHO/
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m1%ESC%[0m%ESC%[1m)%ESC%[0m Add TCP/IP Printer
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m2%ESC%[0m%ESC%[1m)%ESC%[0m Explorer/Folder View Options
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m3%ESC%[0m%ESC%[1m)%ESC%[0m Firewall Settings
@@ -42,7 +42,7 @@ ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m7%ESC%[0m%ESC%[1m)%ESC%[0m Rename Computer/Doma
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m8%ESC%[0m%ESC%[1m)%ESC%[0m Stored Usernames and Passwords
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m9%ESC%[0m%ESC%[1m)%ESC%[0m User Accounts
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31mX%ESC%[0m%ESC%[1m)%ESC%[0m Exit
-ECHO. & CHOICE /C 123456789BIX /N /M "Enter Selection:"
+ECHO/ & CHOICE /C 123456789BIX /N /M "Enter Selection:"
 IF %errorlevel%==1 START "" Rundll32.exe printui.dll,PrintUIEntry /il
 IF %errorlevel%==2 START "" Rundll32.exe shell32.dll,Options_RunDLL 7
 IF %errorlevel%==3 START "" Rundll32.exe shell32.dll,Control_RunDLL firewall.cpl
@@ -56,7 +56,7 @@ IF %errorlevel%==9 START "" Rundll32.exe shell32.dll,Control_RunDLL nusrmgr.cpl
 ::If (B) is pressed business mode is toggled(Header will change color, Yellow is ON, White is OFF)
 IF %errorlevel%==10 (IF "%OPT%"=="B" (SET "OPT=" & SET "HEADER=%ESC%[1mMAIN MENU%ESC%[0m") ELSE (SET "OPT=B" & SET "HEADER=%ESC%[33mMAIN MENU%ESC%[0m"))
 ::If (i) is pressed, InitialSetup, a script to setup new machines quickly, will be downloaded from github and run. If you are in (B)usiness mode, this will retrieve slightly different software packages
-IF %errorlevel%==11 CLS & ECHO. & ECHO Initializing First Run Script%OPT%... & (IF EXIST "%~dp0InitialSetup*.cmd" (DEL "%~dp0InitialSetup*.cmd" /F /Q>nul)) & BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/no-powershell/InitialSetup.cmd" "%~dp0InitialSetup%OPT%.cmd">nul & START "" "%~dp0InitialSetup%OPT%.cmd"
+IF %errorlevel%==11 CLS & ECHO/ & ECHO Initializing First Run Script%OPT%... & (IF EXIST "%~dp0InitialSetup*.cmd" (DEL "%~dp0InitialSetup*.cmd" /F /Q>nul)) & BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/no-powershell/InitialSetup.cmd" "%~dp0InitialSetup%OPT%.cmd">nul & START "" "%~dp0InitialSetup%OPT%.cmd"
 ::E(X)its the script (Returns terminal settings, and self deletes)
 IF %errorlevel%==12 (IF "%~1"=="REVERT" (REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 0 /f>nul)) & (IF "%~1"=="LETWIN" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%LETWIN%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%LETWIN%" /f>nul)) & (IF "%~1"=="TERMINAL" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%TERMINAL%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%TERMINAL2%" /f>nul)) & (GOTO) 2>nul & DEL "%~f0">nul & EXIT
 GOTO MENU
