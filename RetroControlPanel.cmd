@@ -31,7 +31,7 @@ MODE 45,17
 FOR /F "tokens=1,2 delims=#" %%# IN ('"PROMPT #$H#$E# & ECHO ON & FOR %%$ IN (1) DO REM"') DO SET ESC=%%$
 SET "HEADER=%ESC%[1mMAIN MENU%ESC%[0m"
 :MENU
-CLS & ECHO/ & ECHO                   %HEADER%                 & ECHO %ESC%[1m[%ESC%[0m%ESC%[31m==========================================%ESC%[0m%ESC%[1m]%ESC%[0m& ECHO/
+CLS & ECHO/ & ECHO                   %ESC%[1mMAIN MENU%ESC%[0m                 & ECHO %ESC%[1m[%ESC%[0m%ESC%[31m==========================================%ESC%[0m%ESC%[1m]%ESC%[0m& ECHO/
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m1%ESC%[0m%ESC%[1m)%ESC%[0m Add TCP/IP Printer
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m2%ESC%[0m%ESC%[1m)%ESC%[0m Explorer/Folder View Options
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m3%ESC%[0m%ESC%[1m)%ESC%[0m Firewall Settings
@@ -42,7 +42,7 @@ ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m7%ESC%[0m%ESC%[1m)%ESC%[0m Rename Computer/Doma
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m8%ESC%[0m%ESC%[1m)%ESC%[0m Stored Usernames and Passwords
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31m9%ESC%[0m%ESC%[1m)%ESC%[0m User Accounts
 ECHO   %ESC%[1m(%ESC%[0m%ESC%[31mX%ESC%[0m%ESC%[1m)%ESC%[0m Exit
-ECHO/ & CHOICE /C 123456789BIX /N /M "Enter Selection:"
+ECHO/ & CHOICE /C 123456789IX /N /M "Enter Selection:"
 IF %errorlevel%==1 START "" Rundll32.exe printui.dll,PrintUIEntry /il
 IF %errorlevel%==2 START "" Rundll32.exe shell32.dll,Options_RunDLL 7
 IF %errorlevel%==3 START "" Rundll32.exe shell32.dll,Control_RunDLL firewall.cpl
@@ -53,10 +53,8 @@ IF %errorlevel%==6 START "" Rundll32.exe shell32.dll,Control_RunDLL powercfg.cpl
 IF %errorlevel%==7 (IF "%OPT%"=="B" (MD "%~dp0RetroControlPanel" & COPY /Y "%~f0" "%~dp0RetroControlPanel" & REG ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v RetroControlPanel /t REG_SZ /d "\"%~dp0RetroControlPanel\RetroControlPanel.cmd\" %STATE%%TERMMODE%" /f>nul & START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1) ELSE (REG DELETE "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v "RetroControlPanel" /f>nul & RD "%~dp0RetroControlPanel" /S /Q>nul & START "" Rundll32.exe shell32.dll,Control_RunDLL Sysdm.cpl,,1))
 IF %errorlevel%==8 START "" Rundll32.exe keymgr.dll,KRShowKeyMgr
 IF %errorlevel%==9 START "" Rundll32.exe shell32.dll,Control_RunDLL nusrmgr.cpl
-::If (B) is pressed business mode is toggled(Header will change color, Yellow is ON, White is OFF)
-IF %errorlevel%==10 (IF "%OPT%"=="B" (SET "OPT=" & SET "HEADER=%ESC%[1mMAIN MENU%ESC%[0m") ELSE (SET "OPT=B" & SET "HEADER=%ESC%[33mMAIN MENU%ESC%[0m"))
 ::If (i) is pressed, InitialSetup, a script to setup new machines quickly, will be downloaded from github and run. If you are in (B)usiness mode, this will retrieve slightly different software packages
-IF %errorlevel%==11 CLS & ECHO/ & ECHO Initializing First Run Script%OPT%... & (IF EXIST "%~dp0InitialSetup*.cmd" (DEL "%~dp0InitialSetup*.cmd" /F /Q>nul)) & BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/no-powershell/InitialSetup.cmd" "%~dp0InitialSetup%OPT%.cmd">nul & START "" "%~dp0InitialSetup%OPT%.cmd"
+IF %errorlevel%==10 CLS & ECHO/ & ECHO Starting InitialSetup... & (IF EXIST "%~dp0InitialSetup.cmd" (DEL "%~dp0InitialSetup.cmd" /F /Q>nul)) & BITSADMIN /transfer "InitialSetup" /download /priority FOREGROUND "https://raw.githubusercontent.com/illsk1lls/InitialSetup/main/no-powershell/InitialSetup.cmd" "%~dp0InitialSetup.cmd">nul & START "" "%~dp0InitialSetup%OPT%.cmd"
 ::E(X)its the script (Returns terminal settings, and self deletes)
-IF %errorlevel%==12 (IF "%~1"=="REVERT" (REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 0 /f>nul)) & (IF "%~1"=="LETWIN" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%LETWIN%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%LETWIN%" /f>nul)) & (IF "%~1"=="TERMINAL" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%TERMINAL%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%TERMINAL2%" /f>nul)) & (GOTO) 2>nul & DEL "%~f0">nul & EXIT
+IF %errorlevel%==11 (IF "%~1"=="REVERT" (REG ADD "HKCU\Console" /v ForceV2 /t REG_DWORD /d 0 /f>nul)) & (IF "%~1"=="LETWIN" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%LETWIN%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%LETWIN%" /f>nul)) & (IF "%~1"=="TERMINAL" (REG ADD "HKCU\Console\%%%%Startup" /v DelegationConsole /t REG_SZ /d "%TERMINAL%" /f>nul & REG ADD "HKCU\Console\%%%%Startup" /v DelegationTerminal /t REG_SZ /d "%TERMINAL2%" /f>nul)) & (GOTO) 2>nul & DEL "%~f0">nul & EXIT
 GOTO MENU
